@@ -1,92 +1,106 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Upload, Video, ThumbsUp, Calendar, Download, Search, SortDesc } from 'lucide-react';
+import { Upload, Video, ThumbsUp, Download, Search, SortDesc } from 'lucide-react';
 
-const TikTokViewer = () => {
-  const [tiktokData, setTiktokData] = useState(null);
-  const [error, setError] = useState('');
-  const [downloading, setDownloading] = useState({});
-  const [downloadProgress, setDownloadProgress] = useState({});
-  const [downloadedFiles, setDownloadedFiles] = useState(new Set());
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('date');
-  const [sortOrder, setSortOrder] = useState('desc');
-  const [selectedVideos, setSelectedVideos] = useState(new Set());
-  const [isBatchDownloading, setIsBatchDownloading] = useState(false);
+// Define types for the TikTok video data
+type VideoData = {
+  Date: string;
+  Sound?: string;
+  Location?: string;
+  Likes: number;
+  Link: string;
+};
 
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
+type TikTokData = {
+  Video: {
+    Videos: {
+      VideoList: VideoData[];
+    };
+  };
+};
+
+const TikTokViewer: React.FC = () => {
+  const [tiktokData, setTiktokData] = useState<TikTokData | null>(null);
+  const [error, setError] = useState<string>('');
+  const [downloading, setDownloading] = useState<{ [key: number]: boolean }>({});
+  const [downloadProgress, setDownloadProgress] = useState<{ [key: number]: number }>({});
+  const [downloadedFiles, setDownloadedFiles] = useState<Set<number>>(new Set());
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [sortBy, setSortBy] = useState<'date' | 'likes'>('date');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [selectedVideos, setSelectedVideos] = useState<Set<number>>(new Set());
+  const [isBatchDownloading, setIsBatchDownloading] = useState<boolean>(false);
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+    const file = event.target.files?.[0];
     if (!file) return;
 
     try {
       const text = await file.text();
-      const jsonData = JSON.parse(text);
+      const jsonData = JSON.parse(text) as TikTokData;
       setTiktokData(jsonData);
       setError('');
       setSelectedVideos(new Set());
     } catch (err) {
-      setError('Invalid JSON file. Please make sure you uploaded the correct TikTok data export.');
+      setError('Invalid JSON file. Please make sure you uploaded the correct TikTok data export.' + err);
       setTiktokData(null);
     }
   };
 
-  const formatDate = (dateStr) => {
+  const formatDate = (dateStr: string | number | Date): string => {
     return new Date(dateStr).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
-  const getVideoFileName = (date) => {
-    const fileDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  const getVideoFileName = (date: Date): string => {
+    const fileDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(
+      date.getDate(),
+    ).padStart(2, '0')}`;
     const fileTime = `${String(date.getHours()).padStart(2, '0')}-${String(date.getMinutes()).padStart(2, '0')}`;
     return `video-${fileDate}-${fileTime}.mp4`;
   };
 
-  const downloadVideo = async (video, index) => {
+  const downloadVideo = async (video: VideoData, index: number): Promise<boolean> => {
     try {
-      setDownloadProgress(prev => ({ ...prev, [index]: 0 }));
-      
+      setDownloadProgress((prev) => ({ ...prev, [index]: 0 }));
+
       const response = await fetch(video.Link);
-      const reader = response.body.getReader();
-      const contentLength = +response.headers.get('Content-Length');
-      
+      const reader = response.body?.getReader();
+      const contentLength = +(response.headers.get('Content-Length') || 0);
+
       let receivedLength = 0;
-      const chunks = [];
-      
-      while(true) {
-        const {done, value} = await reader.read();
-        
-        if (done) {
-          break;
-        }
-        
-        chunks.push(value);
-        receivedLength += value.length;
-        
+      const chunks: Uint8Array[] = [];
+
+      while (true) {
+        const { done, value } = await reader!.read();
+
+        if (done) break;
+
+        chunks.push(value!);
+        receivedLength += value!.length;
+
         const progress = (receivedLength / contentLength) * 100;
-        setDownloadProgress(prev => ({ ...prev, [index]: progress }));
+        setDownloadProgress((prev) => ({ ...prev, [index]: progress }));
       }
-      
+
       const blob = new Blob(chunks);
       const url = window.URL.createObjectURL(blob);
-      
+
       const a = document.createElement('a');
       a.href = url;
       a.style.display = 'none';
-      const date = new Date(video.Date);
-      const fileDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-      const fileTime = `${String(date.getHours()).padStart(2, '0')}-${String(date.getMinutes()).padStart(2, '0')}`;
-      a.download = `video-${fileDate}-${fileTime}.mp4`;
+      a.download = getVideoFileName(new Date(video.Date));
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-      setDownloadedFiles(prev => new Set([...prev, index]));
+      setDownloadedFiles((prev) => new Set([...prev, index]));
       return true;
     } catch (err) {
       console.error('Failed to download video:', err);
@@ -94,9 +108,9 @@ const TikTokViewer = () => {
     }
   };
 
-  const handleBatchDownload = async () => {
+  const handleBatchDownload = async (): Promise<void> => {
     if (selectedVideos.size === 0) return;
-    
+
     setIsBatchDownloading(true);
     setError('');
 
@@ -106,16 +120,16 @@ const TikTokViewer = () => {
     for (let i = 0; i < selectedVideosList.length; i++) {
       const video = selectedVideosList[i];
       const index = filteredVideos.indexOf(video);
-      setDownloading(prev => ({ ...prev, [index]: true }));
-      
+      setDownloading((prev) => ({ ...prev, [index]: true }));
+
       const success = await downloadVideo(video, index);
       if (!success) failedCount++;
-      
-      setDownloading(prev => ({ ...prev, [index]: false }));
-      
+
+      setDownloading((prev) => ({ ...prev, [index]: false }));
+
       // Small delay between downloads to prevent browser throttling
       if (i < selectedVideosList.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 500));
       }
     }
 
@@ -125,16 +139,16 @@ const TikTokViewer = () => {
     setIsBatchDownloading(false);
   };
 
-  const handleDownload = async (video, index) => {
-    setDownloading(prev => ({ ...prev, [index]: true }));
+  const handleDownload = async (video: VideoData, index: number): Promise<void> => {
+    setDownloading((prev) => ({ ...prev, [index]: true }));
     const success = await downloadVideo(video, index);
     if (!success) {
       setError('Failed to download video. Please try again.');
     }
-    setDownloading(prev => ({ ...prev, [index]: false }));
+    setDownloading((prev) => ({ ...prev, [index]: false }));
   };
 
-  const toggleVideoSelection = (index) => {
+  const toggleVideoSelection = (index: number): void => {
     const newSelected = new Set(selectedVideos);
     if (newSelected.has(index)) {
       newSelected.delete(index);
@@ -144,28 +158,29 @@ const TikTokViewer = () => {
     setSelectedVideos(newSelected);
   };
 
-  const getFilteredAndSortedVideos = () => {
+  const getFilteredAndSortedVideos = (): VideoData[] => {
     if (!tiktokData?.Video?.Videos?.VideoList) return [];
-    
+
     let videos = [...tiktokData.Video.Videos.VideoList];
-    
+
     if (searchTerm) {
-      videos = videos.filter(video => 
-        video.Sound?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        video.Location?.toLowerCase().includes(searchTerm.toLowerCase())
+      videos = videos.filter(
+        (video) =>
+          video.Sound?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          video.Location?.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
-    
+
     videos.sort((a, b) => {
       let comparison = 0;
       if (sortBy === 'date') {
-        comparison = new Date(b.Date) - new Date(a.Date);
+        comparison = new Date(b.Date).getTime() - new Date(a.Date).getTime();
       } else if (sortBy === 'likes') {
         comparison = b.Likes - a.Likes;
       }
       return sortOrder === 'desc' ? comparison : -comparison;
     });
-    
+
     return videos;
   };
 
@@ -238,7 +253,7 @@ const TikTokViewer = () => {
 
                   <select
                     value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
+                    onChange={(e) => setSortBy(e.target.value as "date" | "likes")}
                     className="py-2 px-4 border rounded-lg"
                   >
                     <option value="date">Sort by Date</option>
