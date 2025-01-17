@@ -3271,11 +3271,11 @@ __metadata:
   linkType: hard
 
 "lucide-react@npm:^0.471.1":
-  version: 0.471.1
-  resolution: "lucide-react@npm:0.471.1"
+  version: 0.471.2
+  resolution: "lucide-react@npm:0.471.2"
   peerDependencies:
     react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10c0/d80499f1670b6c371a8c2d3f545dab6161bcb58101a1112811bbe88aa782ff1a467df298074101cf30d7bcad5d29fa8008ac48ce1bb646f1767b48dd603d300a
+  checksum: 10c0/4dca36aaa5ebe4405ac0bed13974795d2db0495fdfb6c3c60aaeb59393d24e3295e2f061ba21766808e7b3e29fa948c87a4868fd514e25f9b415df76d963383f
   languageName: node
   linkType: hard
 
