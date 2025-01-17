@@ -40,6 +40,9 @@ jobs:
       - name: Use Yarn 4.6.0
         run: corepack prepare yarn@4.6.0 --activate
 
+      - name: Verify Yarn Version
+        run: yarn --version
+
       - name: Install dependencies and build
         run: |
           yarn install
