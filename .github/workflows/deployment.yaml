@@ -28,20 +28,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'yarn'
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Use Yarn 4.6.0
-        run: corepack prepare yarn@4.6.0 --activate
-
-      - name: Verify Yarn Version
-        run: yarn --version
+      - name: Install Node.js and enable Corepack
+        run: |
+          corepack enable
+          corepack prepare yarn@4.6.0 --activate
+        shell: bash
 
       - name: Install dependencies and build
         run: |
@@ -54,6 +45,7 @@ jobs:
           name: staticsite
           path: out
           retention-days: 5
+
 
   deploy:
     needs: build
