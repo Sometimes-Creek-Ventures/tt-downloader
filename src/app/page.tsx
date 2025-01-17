@@ -1,47 +1,75 @@
-import Script from 'next/script';
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-50 p-8">
-
+    <main className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 p-8">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6 space-y-8">
-        {/* Your page content */}
+        {/* Hero Section */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-gray-800">
-            TikTok May Be Shutting Down — Save Your Content Now!
+            TT Refuge: A Safe Haven for TikTok Creators
           </h1>
           <p className="text-gray-600 leading-relaxed">
-            With the uncertainty around TikTok’s future, it’s crucial for creators to preserve their content. Our tool lets you download your TikTok videos <strong>without watermarks</strong>, while keeping your data <strong>secure on your device</strong>.
+            With the uncertainty surrounding TikTok’s future, **TT Refuge** is here to help creators preserve their content. Our tool provides a simple and private way to download your TikTok videos <strong>without watermarks</strong> and <strong>securely on your device</strong>.
           </p>
         </div>
 
-        {/* Google AdSense Block */}
-        <div className="my-6">
-          <ins
-            className="adsbygoogle"
-            style={{ display: 'block' }}
-            data-ad-client="ca-pub-7037492213974375"
-            data-ad-slot="1234567890" /* Replace with your ad slot */
-            data-ad-format="auto"
-            data-full-width-responsive="true"
-          />
-          <Script
-            id="adsbygoogle-init"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `(adsbygoogle = window.adsbygoogle || []).push({});`,
-            }}
-          />
+        {/* Features Section */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-semibold text-gray-800">Why Choose TT Refuge?</h2>
+          <ul className="list-disc space-y-3 pl-6 text-gray-600">
+            <li>
+              <strong>No Watermarks:</strong> Keep your videos clean and professional, free of TikTok branding.
+            </li>
+            <li>
+              <strong>Privacy Guaranteed:</strong> Your data stays on your computer. No uploads to any server.
+            </li>
+            <li>
+              <strong>Preserve Your Legacy:</strong> Save your videos, captions, and metadata before it’s too late.
+            </li>
+            <li>
+              <strong>Easy and Free:</strong> Just upload your TikTok data export, and our tool does the rest.
+            </li>
+          </ul>
         </div>
 
-        {/* Rest of your page content */}
+        {/* Call-to-Action */}
         <div className="text-center space-y-6">
-          <a
+          <Link
             href="/tiktok"
             className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-lg"
           >
-            Start Downloading Your Videos
-          </a>
+            Start Saving Your Content
+          </Link>
+        </div>
+
+        {/* Help Section */}
+        <div className="bg-blue-50 border border-blue-300 rounded-lg p-6 shadow-md text-center">
+          <h3 className="text-xl font-semibold text-blue-700 mb-2">
+            Need help exporting your TikTok data?
+          </h3>
+          <p className="text-blue-600">
+            Follow our step-by-step guide to get your TikTok data in JSON format.
+          </p>
+          <div className="mt-4">
+            <Link
+              href="/how-to-export"
+              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-lg"
+            >
+              Learn How to Export Your Data
+            </Link>
+          </div>
+        </div>
+
+        {/* Free Service Section */}
+        <div className="text-center border-t pt-6 space-y-4">
+          <p className="text-gray-600">
+            <strong>TT Refuge is 100% Free</strong> — created for creators, by creators. But if you’d like to show your appreciation, feel free to buy me a beer 🍺 at:
+          </p>
+          <p className="text-xl font-semibold text-gray-800">
+            <span className="text-green-500">$</span>sjdenton
+          </p>
+          <p className="text-sm text-gray-500">via CashApp</p>
         </div>
       </div>
     </main>
