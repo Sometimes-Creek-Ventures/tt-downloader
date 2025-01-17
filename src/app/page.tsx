@@ -10,7 +10,7 @@ export default function Home() {
             TT Refuge: A Safe Haven for TikTok Creators
           </h1>
           <p className="text-gray-600 leading-relaxed">
-            With the uncertainty surrounding TikTok’s future, **TT Refuge** is here to help creators preserve their content. Our tool provides a simple and private way to download your TikTok videos <strong>without watermarks</strong> and <strong>securely on your device</strong>.
+            With the uncertainty surrounding TikTok’s future, <strong>TT Refuge</strong> is here to help creators preserve their content. Our tool provides a simple and private way to download your TikTok videos <strong>without watermarks</strong> and <strong>securely on your device</strong>.
           </p>
         </div>
 
@@ -32,6 +32,9 @@ export default function Home() {
             </li>
           </ul>
         </div>
+
+        {/* Video Section */}
+       
 
         {/* Call-to-Action */}
         <div className="text-center space-y-6">
@@ -58,6 +61,24 @@ export default function Home() {
             >
               Learn How to Export Your Data
             </Link>
+          </div>
+        </div>
+        <div className="space-y-6">
+          <h2 className="text-2xl font-semibold text-gray-800 text-center">How It Works</h2>
+          <p className="text-gray-600 text-center">
+            Watch this quick video to see how easy it is to download TikTok videos without a watermark.
+          </p>
+          <div className="flex justify-center">
+            <div className="w-full max-w-3xl aspect-video">
+              <iframe
+                className="w-full h-full rounded-lg shadow-lg"
+                src="https://www.youtube.com/embed/ODcstHZhp5I"
+                title="How to Download TikTok Videos Without Watermark"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
           </div>
         </div>
 
