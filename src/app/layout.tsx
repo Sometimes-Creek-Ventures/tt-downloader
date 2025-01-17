@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
+import Footer from "@/components/ui/footer"; // Import Footer component
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,14 +30,17 @@ export default function RootLayout({
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7037492213974375"
-          crossOrigin="anonymous"
+          crossorigin="anonymous"
           strategy="afterInteractive"
         />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="flex flex-col min-h-screen">
+          <div className="flex-grow">{children}</div> {/* Main Content */}
+          <Footer /> {/* Footer */}
+        </div>
       </body>
     </html>
   );

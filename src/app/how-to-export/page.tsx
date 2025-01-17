@@ -34,7 +34,7 @@ export default function HowToExportPage() {
 
           <h2 className="text-xl font-semibold">Step 4: Wait for Approval</h2>
           <p className="text-gray-600">
-            TikTok will process your request, which might take a few hours or days. You will receive a notification when your data export is ready.
+            TikTok will process your request, This has always taken a few minutes for me but it might take a few hours or days. You will receive a notification when your data export is ready.
           </p>
 
           <h2 className="text-xl font-semibold">Step 5: Download Your Data</h2>
