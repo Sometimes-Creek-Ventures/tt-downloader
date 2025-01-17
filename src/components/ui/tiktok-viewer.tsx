@@ -374,6 +374,15 @@ const TikTokViewer: React.FC = () => {
           </div>
         </div>
       )}
+      <div className="text-center border-t pt-6 space-y-4">
+          <p className="text-gray-600">
+            <strong>TT Refuge is 100% Free</strong> — created for creators, by creators. But if you’d like to show your appreciation, feel free to buy me a beer 🍺 at:
+          </p>
+          <p className="text-xl font-semibold text-gray-800">
+            <span className="text-green-500">$</span>sjdenton
+          </p>
+          <p className="text-sm text-gray-500">via CashApp</p>
+        </div>
     </div>
   );
 };
